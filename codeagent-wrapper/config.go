@@ -211,9 +211,14 @@ func parseArgs() (*Config, error) {
 	if envCfg := strings.TrimSpace(os.Getenv("CODEX_CONFIG")); envCfg != "" {
 		for _, entry := range strings.Split(envCfg, ";") {
 			entry = strings.TrimSpace(entry)
-			if entry != "" && strings.Contains(entry, "=") {
-				codexConfigFlags = append(codexConfigFlags, entry)
+			if entry == "" {
+				continue
 			}
+			if strings.Contains(entry, "=") {
+				codexConfigFlags = append(codexConfigFlags, entry)
+				continue
+			}
+			logWarn(fmt.Sprintf("Ignoring invalid CODEX_CONFIG segment %q: expected key=value", entry))
 		}
 	}
 
